@@ -1,3 +1,6 @@
+import datetime
+import time
+
 import serial
 import errno
 from colorama import Fore, Back, Style
@@ -7,8 +10,8 @@ import csv
 
 #defirne COM ports and devices
 comRelayBox = 'COM15'
-comMeterWT210 = 'COM5'
-comMeterHP34401A = 'COM6'
+comMeterWT210 = 'COM4'
+comMeterHP34401A = 'COM1'
 delay = 30
 global comportRelayBox, comportMeterWT210
 
@@ -88,7 +91,8 @@ def sedDataReadMeterHP34401A():
     try:
         comportMeterHP34401A.write(b'syst:rem')
         comportMeterHP34401A.write(b'\r\n')
-        comportMeterHP34401A.write(b':meas:curr:dc?')
+        #comportMeterHP34401A.write(b':meas:curr:dc?')
+        comportMeterHP34401A.write(b':meas:volt:dc?')
         comportMeterHP34401A.write(b'\r\n')
     except serial.SerialException as e:
         logging.error("Error during read data MeterWT210: %s" % e)
@@ -112,38 +116,24 @@ def DataReadMeterHP34401A():
         logging.error("Error during read data MeterWT210: %s" % e)
 
 if __name__ == '__main__':
-    for aux in range(1000):
-        print('Iniciando teste.....')
-        openportMeterHP34401A()
-        openportRelayBox()
-        openportMeterWT210()
-
-        openRelayBox_ch1()
-        print('Rele open')
-        sleep(delay)
-
-        sedDataReadMeterWT210()
-        DataReadMeterWT210()
-
+    openportMeterHP34401A()
+    while True:
+        # print('Iniciando teste.....')
+        # openportMeterWT210()
+        #
+        # sedDataReadMeterWT210()
+        # DataReadMeterWT210()
+        #
+        # closeportMeterWT210()
+        #
+        # logging.info("interation: %d" % aux)
+        # print("interation: %d" % aux)
         sedDataReadMeterHP34401A()
         DataReadMeterHP34401A()
+        print('Running application' + str(datetime.datetime.now()))
 
-        closeRelayBox_ch1()
-        print('Rele close')
-        sleep(delay)
 
-        sedDataReadMeterWT210()
-        DataReadMeterWT210()
 
-        sedDataReadMeterHP34401A()
-        DataReadMeterHP34401A()
-
-        closeportRelayBox()
-        closeportMeterWT210()
-        closeportMeterHP34401A()
-
-        logging.info("interation: %d" % aux)
-        print("interation: %d" % aux)
 
 
 

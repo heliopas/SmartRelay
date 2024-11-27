@@ -18,3 +18,8 @@ Programa para controle de acionamento de relés e leitura de multimetros modelos
 - [x] Send and receive data from multimeter
 - [x] Disable beep HP34401A
 - [x] Relay box control
+
+## Features
+
+27/11/2024 - Commit manuais operação
+27/11/2024 - Adicionado camada de conexão com banco de dados oracle alterado código main

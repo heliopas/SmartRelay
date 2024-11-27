@@ -7,9 +7,10 @@ from colorama import Fore, Back, Style
 from time import sleep
 import logging
 import csv
+import dbconn
 
 #defirne COM ports and devices
-comRelayBox = 'COM15'
+comRelayBox = 'COM77'
 comMeterWT210 = 'COM4'
 comMeterHP34401A = 'COM1'
 delay = 30
@@ -116,23 +117,12 @@ def DataReadMeterHP34401A():
         logging.error("Error during read data MeterWT210: %s" % e)
 
 if __name__ == '__main__':
-    openportMeterHP34401A()
-    while True:
-        # print('Iniciando teste.....')
-        # openportMeterWT210()
-        #
-        # sedDataReadMeterWT210()
-        # DataReadMeterWT210()
-        #
-        # closeportMeterWT210()
-        #
-        # logging.info("interation: %d" % aux)
-        # print("interation: %d" % aux)
-        sedDataReadMeterHP34401A()
-        DataReadMeterHP34401A()
-        print('Running application' + str(datetime.datetime.now()))
-
-
+    # openportRelayBox()
+    # while True:
+    #     openRelayBox_ch1()
+    #     sleep(1)
+    #     closeRelayBox_ch1()
+    dbconn
 
 
 

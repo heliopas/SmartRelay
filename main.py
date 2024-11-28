@@ -1,5 +1,7 @@
 import datetime
 import time
+from datetime import timedelta
+from idlelib.debugger_r import restart_subprocess_debugger
 
 import serial
 import errno
@@ -116,13 +118,50 @@ def DataReadMeterHP34401A():
     except serial.SerialException as e:
         logging.error("Error during read data MeterWT210: %s" % e)
 
+def checkLastPackage(lastpackageReceived, hora, minuto):
+    dateTimenow = datetime.datetime.now().strftime('%y-%m-%d %H:%M')
+    lastpackageReceived = lastpackageReceived.strftime('%y-%m-%d %H:%M')
+    FMT = '%y-%m-%d %H:%M'
+
+    print(dateTimenow)
+    print(lastpackageReceived)
+
+    timedif = datetime.datetime.strptime(dateTimenow, FMT) - datetime.datetime.strptime(lastpackageReceived, FMT)
+
+    print(timedif)
+
+    if timedelta(hours=hora, minutes=minuto) <= timedif:
+        print('Tempo execedido')
+        return True
+    else:
+        print('Pacote recebido')
+        return False
+
+
 if __name__ == '__main__':
-    # openportRelayBox()
+    openportRelayBox()
     # while True:
     #     openRelayBox_ch1()
     #     sleep(1)
     #     closeRelayBox_ch1()
-    dbconn.getMeterlastpackage(40056591)
+    landId = ['40056591', '40056589', '400565B0', '4005957B', '40056596', '400565EE']
+
+    while True:
+
+        openRelayBox_ch1()
+        sleep(5) #250
+        closeRelayBox_ch1()
+        sleep(5) #1200
+
+        for row in landId:
+            dbreturn = dbconn.getMeterlastpackage(row)
+            for row in dbreturn:
+                print(row)
+                if checkLastPackage(row[0], 0, 15) == True:
+                    break
+
+
+
 
 
 

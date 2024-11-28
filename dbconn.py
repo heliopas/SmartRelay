@@ -20,9 +20,8 @@ def getMeterlastpackage(lanId):
             cursor.execute(queryDb,[str(lanId)])
 
             res = cursor.fetchall()
-
-            for row in res:
-                print('BDmessage response:\n',row)
+            # for row in res:
+            #     print('BDmessage response:\n',row)
             return res
 
         except bd.Error as e:

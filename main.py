@@ -122,7 +122,7 @@ if __name__ == '__main__':
     #     openRelayBox_ch1()
     #     sleep(1)
     #     closeRelayBox_ch1()
-    dbconn
+    dbconn.getMeterlastpackage(40056591)
 
 
 

@@ -1,31 +1,34 @@
 import getpass
 import traceback
+import files.var.globalVar as var
 
 import oracledb as bd
 
 global connection, cursor, res
 
-user = 'onlyread'
-oraclepwd = 'read'
-serveraddrs = 'BRCWBVR136/magnofarm'
+queryDb = """SELECT endpoints.LASTPACKETRECEIVED, endpointdata.METERNO, endpoints.LASTPROGRAMDATE, endpoints.LASTSTATUSCHANGED
+          FROM CENTRALSERVICES.ENDPOINTS endpoints 
+          JOIN CENTRALSERVICES.ENDPOINTDATA endpointdata
+          USING (SERIALNUMBER) where METERNO = :lanID"""
 
-try:
-    connection = bd.connect(user=user, password=oraclepwd, dsn=serveraddrs)
-    cursor = connection.cursor()
-    cursor.execute("""SELECT endpoints.LASTPACKETRECEIVED, endpointdata.METERNO, endpoints.LASTPROGRAMDATE, endpoints.LASTSTATUSCHANGED
-                    FROM CENTRALSERVICES.ENDPOINTS endpoints 
-                    JOIN CENTRALSERVICES.ENDPOINTDATA endpointdata
-                    USING (SERIALNUMBER) where METERNO = '40056591'""")
+def getMeterlastpackage(lanId):
 
-    res = cursor.fetchall()
+    if lanId != '':
+        try:
+            connection = bd.connect(user=var.user, password=var.oraclepwd, dsn=var.serveraddrs)
+            cursor = connection.cursor()
+            cursor.execute(queryDb,[str(lanId)])
 
-    for row in res:
-        print(row)
+            res = cursor.fetchall()
 
-except bd.Error as e:
-    error, = e.args
-    traceback.print_tb(e.__traceback__)
-    print(error.message)
+            for row in res:
+                print('BDmessage response:\n',row)
+            return res
+
+        except bd.Error as e:
+            error, = e.args
+            traceback.print_tb(e.__traceback__)
+            print(error.message)
 
 
 

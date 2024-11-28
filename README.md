@@ -23,3 +23,4 @@ Programa para controle de acionamento de relés e leitura de multimetros modelos
 
 27/11/2024 - Commit manuais operação
 27/11/2024 - Adicionado camada de conexão com banco de dados oracle alterado código main
+28/11/2024 - Adicionado query de consulta BD por LanId

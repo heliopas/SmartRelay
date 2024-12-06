@@ -12,7 +12,7 @@ import csv
 import dbconn
 
 #defirne COM ports and devices
-comRelayBox = 'COM77'
+comRelayBox = 'COM11'
 comMeterWT210 = 'COM4'
 comMeterHP34401A = 'COM1'
 delay = 30
@@ -58,7 +58,8 @@ def closeportMeterHP34401A():
 def openRelayBox_ch1():
     global comportRelayBox
     try:
-        comportRelayBox.write(b"\n\rROUTe:OPEN (@ 401)\n\r")
+        #comportRelayBox.write(b"\n\rROUTe:OPEN (@ 402)\n\r")
+        comportRelayBox.write(b"\n\rHP34970:route:open (@ 407)\n\r")
         logging.info("Rele open")
     except serial.SerialException as e:
         logging.error("Error during open RelayBox_ch1: %s" % e)
@@ -66,7 +67,8 @@ def openRelayBox_ch1():
 def closeRelayBox_ch1():
     global comportRelayBox
     try:
-        comportRelayBox.write(b"\n\rROUTe:CLOSE (@ 401)\n\r")
+        #comportRelayBox.write(b"\n\rROUTe:CLOSE (@ 402)\n\r")
+        comportRelayBox.write(b"\n\rHP34970:route:close (@ 407)\n\r")
         logging.info("Rele close")
     except serial.SerialException as e:
         logging.error("Error during close RelayBox_ch1: %s" % e)
@@ -123,8 +125,8 @@ def checkLastPackage(lastpackageReceived, hora, minuto):
     lastpackageReceived = lastpackageReceived.strftime('%y-%m-%d %H:%M')
     FMT = '%y-%m-%d %H:%M'
 
-    print(dateTimenow)
-    print(lastpackageReceived)
+    print('Tempo sistema: ' + dateTimenow)
+    print('Tempo ultimo pacote: ' + lastpackageReceived)
 
     timedif = datetime.datetime.strptime(dateTimenow, FMT) - datetime.datetime.strptime(lastpackageReceived, FMT)
 
@@ -146,18 +148,24 @@ if __name__ == '__main__':
     #     closeRelayBox_ch1()
     landId = ['40056591', '40056589', '400565B0', '4005957B', '40056596', '400565EE']
 
-    while True:
+    aux = True
+
+    while aux:
 
         openRelayBox_ch1()
-        sleep(5) #250
+        print('Relay aberto!!!')
+        #logging.info("interation: %d" % aux)
+        sleep(250) #250, desligado por 4 minutos
         closeRelayBox_ch1()
-        sleep(5) #1200
+        print('                 Relay fechado!!!')
+        sleep(1500) #1200, ligado 25 min
 
         for row in landId:
             dbreturn = dbconn.getMeterlastpackage(row)
             for row in dbreturn:
                 print(row)
-                if checkLastPackage(row[0], 0, 15) == True:
+                if checkLastPackage(row[0], 0, 20) == True:
+                    aux = False
                     break
 
 

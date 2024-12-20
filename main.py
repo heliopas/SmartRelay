@@ -11,16 +11,16 @@ import logging
 import csv
 import dbconn
 
-#defirne COM ports and devices
-comRelayBox = 'COM11'
+#define COM ports and devices
+comRelayBox = 'COM80'
 comMeterWT210 = 'COM4'
 comMeterHP34401A = 'COM1'
 delay = 30
 global comportRelayBox, comportMeterWT210
 
-#logging config
-logging.basicConfig(filename='files/log.txt', format='%(asctime)s %(levelname)-8s %(message)s', level=logging.NOTSET)
-logging.Formatter(fmt='%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d,%H:%M:%S')
+# #logging config
+# logging.basicConfig(filename='files/log.txt', format='%(asctime)s %(levelname)-8s %(message)s', level=logging.NOTSET)
+# logging.Formatter(fmt='%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d,%H:%M:%S')
 
 def openportRelayBox():
     global comportRelayBox
@@ -142,38 +142,32 @@ def checkLastPackage(lastpackageReceived, hora, minuto):
 
 if __name__ == '__main__':
     openportRelayBox()
-    # while True:
-    #     openRelayBox_ch1()
-    #     sleep(1)
-    #     closeRelayBox_ch1()
+
     landId = ['40056591', '40056589', '400565B0', '4005957B', '40056596', '400565EE']
 
+    #variaveis de controle da aplicação
     aux = True
+    checkpackageReceived = True
 
     while aux:
 
-        openRelayBox_ch1()
-        print('Relay aberto!!!')
-        #logging.info("interation: %d" % aux)
-        sleep(250) #250, desligado por 4 minutos
-        closeRelayBox_ch1()
-        print('                 Relay fechado!!!')
-        sleep(1500) #1200, ligado 25 min
+        if checkpackageReceived is True: # variavel de controle gera outage só depois das CPUS receberem algum pacote no CC
+            openRelayBox_ch1()
+            print('Relay aberto!!!')
+            #logging.info("interation: %d" % aux)
+            sleep(250) #250, desligado por 4 minutos
+            closeRelayBox_ch1()
+            print('                 Relay fechado!!!')
+            sleep(600) #1200, ligado 25 min
+
 
         for row in landId:
             dbreturn = dbconn.getMeterlastpackage(row)
             for row in dbreturn:
                 print(row)
-                if checkLastPackage(row[0], 0, 20) == True:
-                    aux = False
+                if checkLastPackage(row[0], 0, 10) == True:
+                    checkpackageReceived = False
+                    sleep(120) # espera 2 minutos para realizar leitura novamente do recebimento dos pacotes
                     break
-
-
-
-
-
-
-
-
-
-
+                else:
+                    checkpackageReceived = True # executa outage se todas CPU enviaram algum pacote para o CC

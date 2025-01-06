@@ -12,7 +12,7 @@ import csv
 import dbconn
 
 #define COM ports and devices
-comRelayBox = 'COM80'
+comRelayBox = 'COM77'
 comMeterWT210 = 'COM4'
 comMeterHP34401A = 'COM1'
 delay = 30
@@ -148,10 +148,11 @@ if __name__ == '__main__':
     #variaveis de controle da aplicação
     aux = True
     checkpackageReceived = True
+    outageEnable = True
 
     while aux:
 
-        if checkpackageReceived is True: # variavel de controle gera outage só depois das CPUS receberem algum pacote no CC
+        if outageEnable is True: # variavel de controle gera outage só depois das CPUS receberem algum pacote no CC
             openRelayBox_ch1()
             print('Relay aberto!!!')
             #logging.info("interation: %d" % aux)
@@ -160,14 +161,20 @@ if __name__ == '__main__':
             print('                 Relay fechado!!!')
             sleep(600) #1200, ligado 25 min
 
+        checkpackageReceived = True
 
         for row in landId:
+            if checkpackageReceived is False:
+                break
+
             dbreturn = dbconn.getMeterlastpackage(row)
             for row in dbreturn:
                 print(row)
-                if checkLastPackage(row[0], 0, 10) == True:
+                if checkLastPackage(row[0], 0, 15) == True:
                     checkpackageReceived = False
+                    outageEnable = False
                     sleep(120) # espera 2 minutos para realizar leitura novamente do recebimento dos pacotes
                     break
                 else:
                     checkpackageReceived = True # executa outage se todas CPU enviaram algum pacote para o CC
+                    outageEnable = True

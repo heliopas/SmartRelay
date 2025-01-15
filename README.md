@@ -27,4 +27,5 @@ Programa para controle de acionamento de relés e leitura de multimetros modelos
 - 06/12/2024 - Adicionado controle on/off por recebimento de ultimo pacote via CC
 - 20/12/2024 - Alterado a logica para gerar outage somente após todas CPUS enviarem algum pacote no CC
 - 06/01/2025 - Corrigido lógica que verifica recebimento dos pacotes enviados pela CPU
-- 15/01/2025 - Organizado main, funções e casos de teste em layers
+- 15/01/2025 - Organizado main, funções e casos de teste em layers 
+- 15/01/2025 - Adicionado função para teste via web (selenium) 

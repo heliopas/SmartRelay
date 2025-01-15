@@ -9,6 +9,7 @@ from colorama import Fore, Back, Style
 from time import sleep
 import logging
 import csv
+import loadParameters
 
 #internal classes imports
 import dbconn

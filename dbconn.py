@@ -29,5 +29,22 @@ def getMeterlastpackage(lanId):
             traceback.print_tb(e.__traceback__)
             print(error.message)
 
+def checkLastPackage(lastpackageReceived, hora, minuto):
+    dateTimenow = datetime.datetime.now().strftime('%y-%m-%d %H:%M')
+    lastpackageReceived = lastpackageReceived.strftime('%y-%m-%d %H:%M')
+    FMT = '%y-%m-%d %H:%M'
 
+    print('Tempo sistema: ' + dateTimenow)
+    print('Tempo ultimo pacote: ' + lastpackageReceived)
+
+    timedif = datetime.datetime.strptime(dateTimenow, FMT) - datetime.datetime.strptime(lastpackageReceived, FMT)
+
+    print(timedif)
+
+    if timedelta(hours=hora, minutes=minuto) <= timedif:
+        print('Tempo execedido')
+        return True
+    else:
+        print('Pacote recebido')
+        return False
 

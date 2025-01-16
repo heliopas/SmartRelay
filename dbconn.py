@@ -11,8 +11,11 @@ queryDb = """SELECT endpoints.LASTPACKETRECEIVED, endpointdata.METERNO, endpoint
           JOIN CENTRALSERVICES.ENDPOINTDATA endpointdata
           USING (SERIALNUMBER) where METERNO = :lanID"""
 
-def getMeterlastpackage(lanId):
+queryDb1 = """SELECT SERIALNO, PARENTSERIALNO, SLOTNO, PHASE, LASTUPDATEDDATE
+              FROM CENTRALSERVICES.METERCHILDREN chield
+              where chield.PARENTSERIALNO LIKE :lanID"""
 
+def getMeterlastpackage(lanId):
     if lanId != '':
         try:
             connection = bd.connect(user=var.user, password=var.oraclepwd, dsn=var.serveraddrs)
@@ -48,3 +51,19 @@ def checkLastPackage(lastpackageReceived, hora, minuto):
         print('Pacote recebido')
         return False
 
+def getMeterEndpointParent(lanId):
+    if lanId != '':
+        try:
+            connection = bd.connect(user=var.user, password=var.oraclepwd, dsn=var.serveraddrs)
+            cursor = connection.cursor()
+            cursor.execute(queryDb1,[str(lanId)])
+
+            res = cursor.fetchall()
+            # for row in res:
+            #     print('BDmessage response:\n',row)
+            return res
+
+        except bd.Error as e:
+            error, = e.args
+            traceback.print_tb(e.__traceback__)
+            print(error.message)

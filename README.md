@@ -29,3 +29,4 @@ Programa para controle de acionamento de relés e leitura de multimetros modelos
 - 06/01/2025 - Corrigido lógica que verifica recebimento dos pacotes enviados pela CPU
 - 15/01/2025 - Organizado main, funções e casos de teste em layers 
 - 15/01/2025 - Adicionado função para teste via web (selenium) 
+- 16/01/2025 - Adicionado função para gerar arquivos MI e MM para CPU e meter, adicionado mais funções na main 
